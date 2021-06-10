@@ -7,7 +7,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.js"
+    "build:clear": "mkdir -p ./dist && rm -rf ./dist",
+    "build:rollup": "rollup -c rollup.config.js",
+    "build:types": "tsc -d --emitDeclarationOnly --out ./dist/index.d.ts",
+    "build": "npm run build:clear && npm run build:rollup && npm run build:types",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
