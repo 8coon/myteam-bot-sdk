@@ -1,5 +1,5 @@
 import * as EventEmitter from 'events';
-import fetch, {Response} from 'node-fetch';
+import fetch, {BodyInit, Response} from 'node-fetch';
 import {URLBuilder} from './URLBuilder';
 import {
 	isMyTeamCallbackQueryEvent, isMyTeamEditedMessageEvent,
@@ -134,13 +134,13 @@ class MyTeamSDK extends EventEmitter {
 			? text
 			: new MessageBuilder().text(text);
 
-		return fetch(
+		return this.get(
 			new URLBuilder('messages/sendText', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQueryObject(message.toObject())
 				.toString(),
-		).then(this._handleSDKResponse).then((json) => {
+		).then((json) => {
 			if (typeof json.msgId !== 'string') {
 				throw new MyTeamSDKError('Bad sendText response', {
 					raw: json,
@@ -156,25 +156,25 @@ class MyTeamSDK extends EventEmitter {
 			? text
 			: new MessageBuilder().text(text);
 
-		return fetch(
+		return this.get(
 			new URLBuilder('messages/editText', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQuery('msgId', msgId)
 				.appendQueryObject(message.toObject())
 				.toString(),
-		).then(this._handleSDKResponse);
+		);
 	}
 
 	getMembers(chatId: string, query?: string, cursor?: string): Promise<MyTeamMember[]> {
-		return fetch(
+		return this.get(
 			new URLBuilder('chats/getMembers', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQueryIfTruthy('query', query)
 				.appendQueryIfTruthy('cursor', cursor)
 				.toString(),
-		).then(this._handleSDKResponse).then((json) => {
+		).then((json) => {
 			if (Array.isArray(json.members)) {
 				return json.members;
 			}
@@ -188,13 +188,31 @@ class MyTeamSDK extends EventEmitter {
 			? text
 			: (text ? new CallbackQueryAnswerBuilder().text(text) : new CallbackQueryAnswerBuilder());
 
-		return fetch(
+		return this.get(
 			new URLBuilder('messages/answerCallbackQuery', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('queryId', queryId)
 				.appendQueryObject(answer.toObject())
 				.toString(),
-		).then(this._handleSDKResponse);
+		);
+	}
+
+	get(url: string | URLBuilder) {
+		if (typeof url === 'string') {
+			url = new URLBuilder('chats/getMembers', this._options.baseURL);
+		}
+
+		return fetch(url.toString())
+			.then(this._handleSDKResponse);
+	}
+
+	post(url: string | URLBuilder, body: BodyInit) {
+		if (typeof url === 'string') {
+			url = new URLBuilder('chats/getMembers', this._options.baseURL);
+		}
+
+		return fetch(url.toString(), {method: 'POST', body})
+			.then(this._handleSDKResponse);
 	}
 
 	private _handleSDKResponse = (result: Response) => {
