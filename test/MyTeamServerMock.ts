@@ -44,12 +44,8 @@ export class MyTeamServerMock {
 
 	stop() {
 		return new Promise((resolve, reject) => {
-			this._server.close((err) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(undefined);
-				}
+			this._server.close(() => {
+				resolve(undefined);
 			});
 		});
 	}

@@ -2,7 +2,8 @@ import * as EventEmitter from 'events';
 import fetch, {BodyInit, Response} from 'node-fetch';
 import {URLBuilder} from './URLBuilder';
 import {
-	isMyTeamCallbackQueryEvent, isMyTeamEditedMessageEvent,
+	isMyTeamCallbackQueryEvent,
+	isMyTeamEditedMessageEvent,
 	isMyTeamNewMessageEvent,
 	MyTeamAnyEvent,
 	MyTeamCallbackQueryEvent,

@@ -19,7 +19,7 @@ export function getNewMessageEvent(text: string = '') {
 	} as const;
 }
 
-export function getEditedMessageEvent(text: string = '') {
+export function getEditedMessageEvent(text: string) {
 	return {
 		type: 'editedMessage',
 		payload: {
