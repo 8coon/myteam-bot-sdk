@@ -61,6 +61,10 @@ export class MyTeamServerMock {
 				this._handleEditText(url, response);
 				break;
 
+			case '/chats/getMembers':
+				this._handleGetMembers(url, response);
+				break;
+
 			default:
 				response.write(JSON.stringify({ok: false}), () => {
 					response.end();
@@ -112,6 +116,20 @@ export class MyTeamServerMock {
 
 	private _handleEditText(url: URL, response: http.ServerResponse) {
 		response.write(JSON.stringify({ok: false, description: 'Message not found'}), () => {
+			response.end();
+		});
+	}
+
+	private _handleGetMembers(url: URL, response: http.ServerResponse) {
+		const result = (() => {
+			switch (url.searchParams.get('chatId')) {
+				case 'empty': return {ok: true};
+				case '1': return {ok: true, members: [{userId: '1@user', firstName: 'User', lastName: 'Name', role: 'admin'}]};
+				default: return {ok: false};
+			}
+		})();
+
+		response.write(JSON.stringify(result), () => {
 			response.end();
 		});
 	}
