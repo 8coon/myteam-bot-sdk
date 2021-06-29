@@ -1,7 +1,7 @@
 import {MyTeamServerMock} from "./MyTeamServerMock";
 import {MyTeamSDK, MyTeamSDKError, URLBuilder} from "../src";
-import {MyTeamNewMessageEvent} from "../src/types";
-import {getNewMessageEvent} from "./fixtures";
+import {MyTeamEditedMessageEvent, MyTeamNewMessageEvent} from "../src/types";
+import {getEditedMessageEvent, getNewMessageEvent} from "./fixtures";
 import {sleep} from "./sleep";
 
 const port = 6666;
@@ -12,6 +12,7 @@ const pollTime = 50;
 describe('index', () => {
 	let server: MyTeamServerMock;
 	let sdk: MyTeamSDK;
+	let handleError: jest.MockedFunction<any>;
 
 	beforeEach(() => {
 		sdk = new MyTeamSDK({
@@ -19,6 +20,9 @@ describe('index', () => {
 			baseURL,
 			pollTime,
 		});
+
+		handleError = jest.fn();
+		sdk.on('error', handleError);
 
 		server = new MyTeamServerMock();
 		return server.listen(6666);
@@ -103,5 +107,16 @@ describe('index', () => {
 			event: {...event, eventId: 2},
 			sdk,
 		});
+	});
+
+	test('malformed command from edit event', async () => {
+		sdk.listen();
+
+		const event = getEditedMessageEvent({} as any);
+		server.sendEvent<MyTeamEditedMessageEvent>(event);
+
+		await sleep(pollTime * 3);
+
+		expect(handleError).toHaveBeenCalledTimes(0);
 	});
 });
