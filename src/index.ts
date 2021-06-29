@@ -263,7 +263,6 @@ class MyTeamSDK extends EventEmitter {
 	private async _mainLoopIter() {
 		const json: { events: MyTeamAnyEvent[] } = await this.get(
 			new URLBuilder('events/get', this._options.baseURL)
-				.appendQuery('token', this._options.token)
 				.appendQuery('lastEventId', this._lastEventId)
 				.appendQuery('pollTime', this._options.pollTime)
 				.toString(),
