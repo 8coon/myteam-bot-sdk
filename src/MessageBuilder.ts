@@ -70,10 +70,8 @@ export class MessageBuilder {
 			this.buttonRow();
 		}
 
-		if (this.inlineKeyboardMarkup) {
-			const row = this.inlineKeyboardMarkup[this.inlineKeyboardMarkup.length - 1];
-			row.push(button);
-		}
+		const row = this.inlineKeyboardMarkup[this.inlineKeyboardMarkup.length - 1] as any as MyTeamButton[];
+		row.push(button);
 
 		return this;
 	}
@@ -82,6 +80,10 @@ export class MessageBuilder {
 		if (type === 'none') {
 			this.textValue += value;
 			return this;
+		}
+
+		if (this.parseMode) {
+			this.textValue = '';
 		}
 
 		const offset = this.textValue.length;
@@ -97,10 +99,10 @@ export class MessageBuilder {
 
 	formatRange(type: keyof MyTeamFormat, value: MyTeamFormat[typeof type][0]): this {
 		this.parseMode = undefined;
-		this.format = {};
+		this.format = this.format ?? {};
 
 		this.format[type] = (this.format[type] ?? []) as any;
-		this.format[type]?.push(value as any);
+		(this.format[type] as any).push(value as any);
 
 		return this;
 	}
