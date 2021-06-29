@@ -6,9 +6,9 @@ import {
 	MessageBuilder,
 	CallbackQueryAnswerBuilder,
 	MyTeamEditedMessageEvent,
-	MyTeamNewMessageEvent,
+	MyTeamNewMessageEvent, MyTeamCallbackQueryEvent, MyTeamCallbackQueryEventEx,
 } from "../src";
-import {getEditedMessageEvent, getNewMessageEvent} from "./fixtures";
+import {getCallbackQueryEvent, getEditedMessageEvent, getNewMessageEvent} from "./fixtures";
 import {sleep} from "./sleep";
 
 const port = 6666;
@@ -239,6 +239,35 @@ describe('index', () => {
 			new CallbackQueryAnswerBuilder().alert('click'),
 		)).resolves.toBeTruthy();
 
+		expect(handleAnswer).toHaveBeenCalledWith(
+			`http://localhost/messages/answerCallbackQuery?queryId=1&text=click&showAlert=true&token=${token}`
+		);
+	});
+
+	test('callbackQuery event', async () => {
+		sdk.listen();
+
+		const handleQuery = jest.fn((event: MyTeamCallbackQueryEventEx) => {
+			if (event.payload.queryId === '1') {
+				event.replyData.alert('click');
+				event.answer();
+			}
+		});
+
+		const handleAnswer = jest.fn();
+
+		sdk.on('callbackQuery', handleQuery);
+		server.requestCallbackQuery('1', handleAnswer);
+
+		const event = getCallbackQueryEvent('1');
+		server.sendEvent<MyTeamCallbackQueryEvent>(event);
+
+		await sleep(pollTime * 3);
+
+		const expectedEvent = new MyTeamCallbackQueryEventEx(sdk, 2, event.payload);
+		expectedEvent.replyData.alert('click');
+
+		expect(handleQuery).toHaveBeenCalledWith(expectedEvent);
 		expect(handleAnswer).toHaveBeenCalledWith(
 			`http://localhost/messages/answerCallbackQuery?queryId=1&text=click&showAlert=true&token=${token}`
 		);
