@@ -299,4 +299,16 @@ describe('index', () => {
 			}),
 		);
 	});
+
+	test('error in event handler', async () => {
+		sdk.on('newMessage', () => {
+			throw new Error('custom error');
+		});
+		sdk.listen();
+		server.sendEvent<MyTeamNewMessageEvent>(getNewMessageEvent());
+
+		await sleep(pollTime * 3);
+
+		expect(handleError).toHaveBeenCalledWith(new Error('custom error'));
+	});
 });
