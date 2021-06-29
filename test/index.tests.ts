@@ -151,4 +151,26 @@ describe('index', () => {
 			new MyTeamSDKError('Bad sendText response', {raw: {ok: true}}),
 		);
 	});
+
+	test('editText', async () => {
+		await expect(
+			sdk.editText('1chat', '1', 'invalid')
+		).rejects.toEqual(
+			new MyTeamSDKError('Message not found', {
+				raw: {ok: false, description: 'Message not found'},
+				url: `http://localhost:6666/messages/editText?chatId=1chat&msgId=1&text=invalid&token=${token}`,
+			}),
+		);
+	});
+
+	test('editText accepts MessageBuilder', async () => {
+		await expect(
+			sdk.editText('1chat', '1', new MessageBuilder().text('invalid'))
+		).rejects.toEqual(
+			new MyTeamSDKError('Message not found', {
+				raw: {ok: false, description: 'Message not found'},
+				url: `http://localhost:6666/messages/editText?chatId=1chat&msgId=1&text=invalid&token=${token}`,
+			}),
+		);
+	});
 });

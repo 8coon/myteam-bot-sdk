@@ -57,6 +57,10 @@ export class MyTeamServerMock {
 				this._handleSendText(url, response);
 				break;
 
+			case '/messages/editText':
+				this._handleEditText(url, response);
+				break;
+
 			default:
 				response.write(JSON.stringify({ok: false}), () => {
 					response.end();
@@ -102,6 +106,12 @@ export class MyTeamServerMock {
 		})();
 
 		response.write(JSON.stringify(result), () => {
+			response.end();
+		});
+	}
+
+	private _handleEditText(url: URL, response: http.ServerResponse) {
+		response.write(JSON.stringify({ok: false, description: 'Message not found'}), () => {
 			response.end();
 		});
 	}
