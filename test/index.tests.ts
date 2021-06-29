@@ -11,13 +11,15 @@ const pollTime = 50;
 
 describe('index', () => {
 	let server: MyTeamServerMock;
-	const sdk = new MyTeamSDK({
-		token,
-		baseURL,
-		pollTime,
-	});
+	let sdk: MyTeamSDK;
 
 	beforeEach(() => {
+		sdk = new MyTeamSDK({
+			token,
+			baseURL,
+			pollTime,
+		});
+
 		server = new MyTeamServerMock();
 		return server.listen(6666);
 	});
@@ -63,5 +65,43 @@ describe('index', () => {
 
 		expect(newMessageHandler).toHaveBeenCalledTimes(1);
 		expect(newMessageHandler).toHaveBeenCalledWith({...event, eventId: expect.any(Number)});
+	});
+
+	test('command', async () => {
+		const commandHandler = jest.fn();
+		sdk.addCommand('/test', commandHandler);
+		sdk.listen();
+
+		const event = getNewMessageEvent('/test this is arguments');
+		server.sendEvent<MyTeamNewMessageEvent>(event);
+
+		await sleep(pollTime * 3);
+
+		expect(commandHandler).toHaveBeenCalledTimes(1);
+		expect(commandHandler).toHaveBeenCalledWith({
+			args: 'this is arguments',
+			command: '/test',
+			event: {...event, eventId: 2},
+			sdk,
+		});
+	});
+
+	test('command with an alias and no arguments', async () => {
+		const commandHandler = jest.fn();
+		sdk.addCommand(['/test', '/a'], commandHandler);
+		sdk.listen();
+
+		const event = getNewMessageEvent('/a');
+		server.sendEvent<MyTeamNewMessageEvent>(event);
+
+		await sleep(pollTime * 3);
+
+		expect(commandHandler).toHaveBeenCalledTimes(1);
+		expect(commandHandler).toHaveBeenCalledWith({
+			args: '',
+			command: '/a',
+			event: {...event, eventId: 2},
+			sdk,
+		});
 	});
 });

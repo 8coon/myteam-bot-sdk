@@ -1,4 +1,4 @@
-export function getNewMessageEvent() {
+export function getNewMessageEvent(text: string = '') {
 	return {
 		type: 'newMessage',
 		payload: {
@@ -13,7 +13,7 @@ export function getNewMessageEvent() {
 				title: 'Admin Chat',
 			},
 			msgId: '1',
-			text: 'Hello!',
+			text,
 			timestamp: Math.floor(Date.now() / 1000),
 		},
 	} as const;
