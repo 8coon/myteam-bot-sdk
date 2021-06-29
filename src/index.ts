@@ -1,4 +1,4 @@
-import * as EventEmitter from 'events';
+import {EventEmitter} from 'events';
 import fetch, {BodyInit, Response} from 'node-fetch';
 import {URLBuilder} from './URLBuilder';
 import {
