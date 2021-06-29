@@ -9,6 +9,7 @@ export class MyTeamServerMock {
 	private _lastEventId: number = 1;
 	private _lastSeenId: number = 1;
 	private _lastToken?: string;
+	private _eventError = false;
 
 	get lastToken() {
 		return this._lastToken;
@@ -31,6 +32,10 @@ export class MyTeamServerMock {
 		};
 
 		this._events[eventWithId.eventId] = eventWithId;
+	}
+
+	sendEventError() {
+		this._eventError = true;
 	}
 
 	requestCallbackQuery(queryId: string, onAnswer: (url: string) => void) {
@@ -99,10 +104,13 @@ export class MyTeamServerMock {
 			? Promise.resolve()
 			: sleep(pollTime);
 
-		response.write(JSON.stringify({
-			ok: true,
-			events,
-		}), () => {
+		const result = this._eventError
+			? {ok: false}
+			: {ok: true, events};
+
+		this._eventError = false;
+
+		response.write(JSON.stringify(result), () => {
 			promise.then(() => {
 				response.end();
 			});

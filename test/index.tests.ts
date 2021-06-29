@@ -285,4 +285,18 @@ describe('index', () => {
 
 		expect(eventHandler).toHaveBeenCalledWith({...event, eventId: 2});
 	});
+
+	test('error in listen', async () => {
+		sdk.listen();
+		server.sendEventError();
+
+		await sleep(pollTime * 3);
+
+		expect(handleError).toHaveBeenCalledWith(
+			new MyTeamSDKError(undefined, {
+				raw: {ok: false},
+				url: `http://localhost:6666/events/get?lastEventId=0&pollTime=${pollTime}&token=${token}`,
+			}),
+		);
+	});
 });
