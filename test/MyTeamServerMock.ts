@@ -5,6 +5,7 @@ import {sleep} from "./sleep";
 export class MyTeamServerMock {
 	private readonly _server: http.Server;
 	private readonly _events: Record<string, MyTeamAnyEvent> = {};
+	private readonly _callbacks: Record<string, (url: string) => void> = {};
 	private _lastEventId: number = 1;
 	private _lastSeenId: number = 1;
 	private _lastToken?: string;
@@ -30,6 +31,10 @@ export class MyTeamServerMock {
 		};
 
 		this._events[eventWithId.eventId] = eventWithId;
+	}
+
+	requestCallbackQuery(queryId: string, onAnswer: (url: string) => void) {
+		this._callbacks[queryId] = onAnswer;
 	}
 
 	stop() {
@@ -63,6 +68,10 @@ export class MyTeamServerMock {
 
 			case '/chats/getMembers':
 				this._handleGetMembers(url, response);
+				break;
+
+			case '/messages/answerCallbackQuery':
+				this._handleAnswerCallbackQuery(url, response);
 				break;
 
 			default:
@@ -131,6 +140,17 @@ export class MyTeamServerMock {
 
 		response.write(JSON.stringify(result), () => {
 			response.end();
+		});
+	}
+
+	private _handleAnswerCallbackQuery(url: URL, response: http.ServerResponse) {
+		response.write(JSON.stringify({ok: true}), () => {
+			response.end();
+
+			const queryId = url.searchParams.get('queryId');
+			const callback = this._callbacks[queryId];
+			delete this._callbacks[queryId];
+			callback(url.toString());
 		});
 	}
 }

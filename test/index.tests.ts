@@ -4,6 +4,7 @@ import {
 	MyTeamSDKError,
 	URLBuilder,
 	MessageBuilder,
+	CallbackQueryAnswerBuilder,
 	MyTeamEditedMessageEvent,
 	MyTeamNewMessageEvent,
 } from "../src";
@@ -205,6 +206,41 @@ describe('index', () => {
 				raw: {ok: false},
 				url: `http://localhost:6666/chats/getMembers?chatId=2&query=q&cursor=c&token=${token}`,
 			}),
+		);
+	});
+
+	test('answerCallbackQuery', async () => {
+		const handleAnswer = jest.fn();
+		server.requestCallbackQuery('1', handleAnswer);
+
+		await expect(sdk.answerCallbackQuery('1')).resolves.toBeTruthy();
+
+		expect(handleAnswer).toHaveBeenCalledWith(
+			`http://localhost/messages/answerCallbackQuery?queryId=1&token=${token}`
+		);
+	});
+
+	test('answerCallbackQuery with string', async () => {
+		const handleAnswer = jest.fn();
+		server.requestCallbackQuery('1', handleAnswer);
+
+		await expect(sdk.answerCallbackQuery('1', 'click')).resolves.toBeTruthy();
+
+		expect(handleAnswer).toHaveBeenCalledWith(
+			`http://localhost/messages/answerCallbackQuery?queryId=1&text=click&token=${token}`
+		);
+	});
+
+	test('answerCallbackQuery with builder', async () => {
+		const handleAnswer = jest.fn();
+		server.requestCallbackQuery('1', handleAnswer);
+
+		await expect(sdk.answerCallbackQuery('1',
+			new CallbackQueryAnswerBuilder().alert('click'),
+		)).resolves.toBeTruthy();
+
+		expect(handleAnswer).toHaveBeenCalledWith(
+			`http://localhost/messages/answerCallbackQuery?queryId=1&text=click&showAlert=true&token=${token}`
 		);
 	});
 });
