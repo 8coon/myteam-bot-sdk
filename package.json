@@ -9,7 +9,7 @@
   "scripts": {
     "build:clear": "mkdir -p ./dist && rm -rf ./dist",
     "build:rollup": "rollup -c rollup.config.js",
-    "build:types": "tsc -d --emitDeclarationOnly --out ./dist/index.d.ts",
+    "build:types": "tsc -d --emitDeclarationOnly --outDir ./dist",
     "build": "npm run build:clear && npm run build:rollup && npm run build:types",
     "prepublishOnly": "npm run build",
     "test": "jest --coverage --runInBand"
