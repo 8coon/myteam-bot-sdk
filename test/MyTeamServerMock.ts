@@ -46,14 +46,18 @@ export class MyTeamServerMock {
 
 	private _handleRequest = (request: http.IncomingMessage, response: http.ServerResponse) => {
 		const url = new URL(request.url, 'http://localhost');
+		this._lastToken = url.searchParams.get('token');
 
 		switch (url.pathname) {
 			case '/events/get':
 				this._handleEventsGet(url, response);
 				break;
 
+			case '/messages/sendText':
+				this._handleSendText(url, response);
+				break;
+
 			default:
-				this._lastToken = url.searchParams.get('token');
 				response.write(JSON.stringify({ok: false}), () => {
 					response.end();
 				});
@@ -62,13 +66,8 @@ export class MyTeamServerMock {
 	}
 
 	private _handleEventsGet(url: URL, response: http.ServerResponse) {
-		this._lastToken = url.searchParams.get('token');
 		this._lastSeenId = Math.max(parseInt(url.searchParams.get('lastEventId')), this._lastSeenId);
 		const pollTime = parseInt(url.searchParams.get('pollTime'));
-
-		response.writeHead(200, {
-			'content-type': 'application/json',
-		});
 
 		const events: MyTeamAnyEvent[] = [];
 
@@ -90,6 +89,20 @@ export class MyTeamServerMock {
 			promise.then(() => {
 				response.end();
 			});
+		});
+	}
+
+	private _handleSendText(url: URL, response: http.ServerResponse) {
+		const result = (() => {
+			switch (url.searchParams.get('text')) {
+				case 'invalid': return {ok: false, description: 'Invalid text'};
+				case 'malformed': return {ok: true};
+				default: return {ok: true, msgId: '1'};
+			}
+		})();
+
+		response.write(JSON.stringify(result), () => {
+			response.end();
 		});
 	}
 }
