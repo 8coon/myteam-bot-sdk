@@ -11,13 +11,17 @@
     "build:rollup": "rollup -c rollup.config.js",
     "build:types": "tsc -d --emitDeclarationOnly --out ./dist/index.d.ts",
     "build": "npm run build:clear && npm run build:rollup && npm run build:types",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest --coverage"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
+    "@types/jest": "^26.0.23",
     "@types/node-fetch": "^2.5.10",
+    "jest": "^27.0.5",
     "rollup": "^2.51.1",
+    "ts-jest": "^27.0.3",
     "typescript": "^4.3.2"
   },
   "dependencies": {
