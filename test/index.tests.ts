@@ -173,4 +173,38 @@ describe('index', () => {
 			}),
 		);
 	});
+
+	test('getMembers', async () => {
+		await expect(
+			sdk.getMembers('1')
+		).resolves.toEqual([{userId: '1@user', firstName: 'User', lastName: 'Name', role: 'admin'}]);
+	});
+
+	test('getMembers empty', async () => {
+		await expect(
+			sdk.getMembers('empty')
+		).resolves.toEqual([]);
+	});
+
+	test('getMembers with query', async () => {
+		await expect(
+			sdk.getMembers('2', 'q')
+		).rejects.toEqual(
+			new MyTeamSDKError(undefined, {
+				raw: {ok: false},
+				url: `http://localhost:6666/chats/getMembers?chatId=2&query=q&token=${token}`,
+			}),
+		);
+	});
+
+	test('getMembers with query and cursor', async () => {
+		await expect(
+			sdk.getMembers('2', 'q', 'c')
+		).rejects.toEqual(
+			new MyTeamSDKError(undefined, {
+				raw: {ok: false},
+				url: `http://localhost:6666/chats/getMembers?chatId=2&query=q&cursor=c&token=${token}`,
+			}),
+		);
+	});
 });
