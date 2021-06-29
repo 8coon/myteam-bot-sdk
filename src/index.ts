@@ -293,6 +293,7 @@ export {
 	MyTeamSDKError,
 	URLBuilder,
 	MessageBuilder,
+	CallbackQueryAnswerBuilder,
 	MyTeamCallbackQueryEventEx,
 	escapeHtml,
 }
