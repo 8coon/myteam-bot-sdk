@@ -25,4 +25,14 @@ describe('requests', () => {
 		await expect(sdk.get('events/get')).resolves.toBeTruthy();
 		expect(server.lastToken).toEqual(token);
 	});
+
+	test('SDK sends token to each POST request', async () => {
+		await expect(sdk.post('test', 'some body')).rejects.toEqual(
+			new MyTeamSDKError(undefined, {
+				raw: {ok: false},
+				url: `http://localhost:6666/test?token=${token}`,
+			}),
+		);
+		expect(server.lastToken).toEqual(token);
+	});
 });

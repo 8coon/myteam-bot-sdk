@@ -52,6 +52,7 @@ export class MyTeamServerMock {
 				break;
 
 			default:
+				this._lastToken = url.searchParams.get('token');
 				response.write(JSON.stringify({ok: false}), () => {
 					response.end();
 				});
