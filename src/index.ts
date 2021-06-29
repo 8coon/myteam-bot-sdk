@@ -136,7 +136,6 @@ class MyTeamSDK extends EventEmitter {
 
 		return this.get(
 			new URLBuilder('messages/sendText', this._options.baseURL)
-				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQueryObject(message.toObject())
 				.toString(),
@@ -158,7 +157,6 @@ class MyTeamSDK extends EventEmitter {
 
 		return this.get(
 			new URLBuilder('messages/editText', this._options.baseURL)
-				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQuery('msgId', msgId)
 				.appendQueryObject(message.toObject())
@@ -169,7 +167,6 @@ class MyTeamSDK extends EventEmitter {
 	getMembers(chatId: string, query?: string, cursor?: string): Promise<MyTeamMember[]> {
 		return this.get(
 			new URLBuilder('chats/getMembers', this._options.baseURL)
-				.appendQuery('token', this._options.token)
 				.appendQuery('chatId', chatId)
 				.appendQueryIfTruthy('query', query)
 				.appendQueryIfTruthy('cursor', cursor)
@@ -190,7 +187,6 @@ class MyTeamSDK extends EventEmitter {
 
 		return this.get(
 			new URLBuilder('messages/answerCallbackQuery', this._options.baseURL)
-				.appendQuery('token', this._options.token)
 				.appendQuery('queryId', queryId)
 				.appendQueryObject(answer.toObject())
 				.toString(),
@@ -199,8 +195,10 @@ class MyTeamSDK extends EventEmitter {
 
 	get(url: string | URLBuilder) {
 		if (typeof url === 'string') {
-			url = new URLBuilder('chats/getMembers', this._options.baseURL);
+			url = new URLBuilder(url, this._options.baseURL);
 		}
+
+		url.appendQuery('token', this._options.token);
 
 		return fetch(url.toString())
 			.then(this._handleSDKResponse);
@@ -208,8 +206,10 @@ class MyTeamSDK extends EventEmitter {
 
 	post(url: string | URLBuilder, body: BodyInit) {
 		if (typeof url === 'string') {
-			url = new URLBuilder('chats/getMembers', this._options.baseURL);
+			url = new URLBuilder(url, this._options.baseURL);
 		}
+
+		url.appendQuery('token', this._options.token);
 
 		return fetch(url.toString(), {method: 'POST', body})
 			.then(this._handleSDKResponse);
@@ -260,7 +260,7 @@ class MyTeamSDK extends EventEmitter {
 	}
 
 	private async _mainLoopIter() {
-		const response = await fetch(
+		const response = await this.get(
 			new URLBuilder('events/get', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('lastEventId', this._lastEventId)
