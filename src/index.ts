@@ -15,7 +15,7 @@ import {
 	MyTeamUnpinnedMessageEvent,
 } from './types';
 export * from './types';
-import {MessageBuilder, escapeHtml} from "./MessageBuilder";
+import {MessageBuilder, escapeHTML} from "./MessageBuilder";
 import {CallbackQueryAnswerBuilder} from "./CallbackQueryAnswerBuilder";
 
 export interface MyTeamOptions {
@@ -295,5 +295,5 @@ export {
 	MessageBuilder,
 	CallbackQueryAnswerBuilder,
 	MyTeamCallbackQueryEventEx,
-	escapeHtml,
+	escapeHTML,
 }

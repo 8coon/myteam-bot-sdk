@@ -13,7 +13,7 @@ export type MyTeamButton = MyTeamBaseButton & (
 	}
 );
 
-export function escapeHtml(unsafe: string) {
+export function escapeHTML(unsafe: string) {
 	return unsafe
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
