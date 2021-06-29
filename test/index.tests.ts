@@ -1,14 +1,19 @@
 import {MyTeamServerMock} from "./MyTeamServerMock";
 import {MyTeamSDK, MyTeamSDKError} from "../src";
+import {MyTeamNewMessageEvent} from "../src/types";
+import {getNewMessageEvent} from "./fixtures";
+import {sleep} from "./sleep";
 
 const port = 6666;
 const token = '123';
+const pollTime = 50;
 
-describe('requests', () => {
+describe('index', () => {
 	let server: MyTeamServerMock;
 	const sdk = new MyTeamSDK({
 		token,
 		baseURL: `http://localhost:${port}`,
+		pollTime,
 	});
 
 	beforeEach(() => {
@@ -34,5 +39,19 @@ describe('requests', () => {
 			}),
 		);
 		expect(server.lastToken).toEqual(token);
+	});
+
+	test('get events', async () => {
+		const newMessageHandler = jest.fn();
+		sdk.on('newMessage', newMessageHandler);
+		sdk.listen();
+
+		const event = getNewMessageEvent();
+		server.sendEvent<MyTeamNewMessageEvent>(event);
+
+		await sleep(pollTime * 3);
+
+		expect(newMessageHandler).toHaveBeenCalledTimes(1);
+		expect(newMessageHandler).toHaveBeenCalledWith({...event, eventId: expect.any(Number)});
 	});
 });

@@ -1,11 +1,12 @@
 import * as http from "http";
 import {MyTeamAnyEvent} from "../src/types";
+import {sleep} from "./sleep";
 
 export class MyTeamServerMock {
 	private readonly _server: http.Server;
 	private readonly _events: Record<string, MyTeamAnyEvent> = {};
-	private _lastEventId: number = 0;
-	private _lastSeenId: number = -1;
+	private _lastEventId: number = 1;
+	private _lastSeenId: number = 1;
 	private _lastToken?: string;
 
 	get lastToken() {
@@ -22,10 +23,10 @@ export class MyTeamServerMock {
 		});
 	}
 
-	sendEvent<T extends MyTeamAnyEvent = MyTeamAnyEvent>(event: T & {eventId: never}) {
-		const eventWithId: T = {
+	sendEvent<T extends MyTeamAnyEvent = MyTeamAnyEvent>(event: Omit<T, 'eventId'>) {
+		const eventWithId: MyTeamAnyEvent = {
 			...event,
-			eventId: this._lastEventId++,
+			eventId: ++this._lastEventId,
 		};
 
 		this._events[eventWithId.eventId] = eventWithId;
@@ -62,9 +63,33 @@ export class MyTeamServerMock {
 
 	private _handleEventsGet(url: URL, response: http.ServerResponse) {
 		this._lastToken = url.searchParams.get('token');
+		this._lastSeenId = Math.max(parseInt(url.searchParams.get('lastEventId')), this._lastSeenId);
+		const pollTime = parseInt(url.searchParams.get('pollTime'));
 
-		response.write(JSON.stringify({ok: true}), () => {
-			response.end();
+		response.writeHead(200, {
+			'content-type': 'application/json',
+		});
+
+		const events: MyTeamAnyEvent[] = [];
+
+		for (const event of Object.values(this._events)) {
+			if (event.eventId > this._lastSeenId) {
+				events.push(event);
+				this._lastSeenId = event.eventId;
+			}
+		}
+
+		const promise = events.length
+			? Promise.resolve()
+			: sleep(pollTime);
+
+		response.write(JSON.stringify({
+			ok: true,
+			events,
+		}), () => {
+			promise.then(() => {
+				response.end();
+			});
 		});
 	}
 }

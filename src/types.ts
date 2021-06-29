@@ -102,7 +102,7 @@ export interface MyTeamAnyEvent extends MyTeamEvent<any, any> {}
 
 export interface MyTeamNewMessageEvent extends MyTeamEvent<'newMessage', MyTeamMessage & {
 	chat: MyTeamChat;
-	parts: (MyTeamAnyPart | null)[];
+	parts?: (MyTeamAnyPart | null)[];
 }> {}
 export function isMyTeamNewMessageEvent(event: MyTeamAnyEvent): event is MyTeamNewMessageEvent {
 	return event.type === 'newMessage';

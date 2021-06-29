@@ -260,15 +260,13 @@ class MyTeamSDK extends EventEmitter {
 	}
 
 	private async _mainLoopIter() {
-		const response = await this.get(
+		const json: { events: MyTeamAnyEvent[] } = await this.get(
 			new URLBuilder('events/get', this._options.baseURL)
 				.appendQuery('token', this._options.token)
 				.appendQuery('lastEventId', this._lastEventId)
 				.appendQuery('pollTime', this._options.pollTime)
 				.toString(),
 		);
-
-		const json: { events: MyTeamAnyEvent[] } = await response.json();
 
 		// Эмитим события для всего, что пришло от сервера
 		for (let event of json.events) {
