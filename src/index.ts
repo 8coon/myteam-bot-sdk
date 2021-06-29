@@ -14,6 +14,7 @@ import {
 	MyTeamPinnedMessageEvent,
 	MyTeamUnpinnedMessageEvent,
 } from './types';
+export * from './types';
 import {MessageBuilder, escapeHtml} from "./MessageBuilder";
 import {CallbackQueryAnswerBuilder} from "./CallbackQueryAnswerBuilder";
 

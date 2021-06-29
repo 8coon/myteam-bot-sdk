@@ -1,6 +1,5 @@
 import {MyTeamServerMock} from "./MyTeamServerMock";
-import {MyTeamSDK, MyTeamSDKError, URLBuilder} from "../src";
-import {MyTeamEditedMessageEvent, MyTeamNewMessageEvent} from "../src/types";
+import {MyTeamSDK, MyTeamSDKError, URLBuilder, MyTeamEditedMessageEvent, MyTeamNewMessageEvent} from "../src";
 import {getEditedMessageEvent, getNewMessageEvent} from "./fixtures";
 import {sleep} from "./sleep";
 
