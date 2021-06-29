@@ -272,4 +272,17 @@ describe('index', () => {
 			`http://localhost/messages/answerCallbackQuery?queryId=1&text=click&showAlert=true&token=${token}`
 		);
 	});
+
+	test('send custom event', async () => {
+		const eventHandler = jest.fn();
+		sdk.on('customEvent', eventHandler);
+		sdk.listen();
+
+		const event = {type: 'customEvent', payload: {}};
+		server.sendEvent(event);
+
+		await sleep(pollTime * 3);
+
+		expect(eventHandler).toHaveBeenCalledWith({...event, eventId: 2});
+	});
 });
