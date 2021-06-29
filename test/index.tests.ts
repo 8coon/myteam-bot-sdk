@@ -1,5 +1,12 @@
 import {MyTeamServerMock} from "./MyTeamServerMock";
-import {MyTeamSDK, MyTeamSDKError, URLBuilder, MyTeamEditedMessageEvent, MyTeamNewMessageEvent} from "../src";
+import {
+	MyTeamSDK,
+	MyTeamSDKError,
+	URLBuilder,
+	MessageBuilder,
+	MyTeamEditedMessageEvent,
+	MyTeamNewMessageEvent,
+} from "../src";
 import {getEditedMessageEvent, getNewMessageEvent} from "./fixtures";
 import {sleep} from "./sleep";
 
@@ -117,5 +124,31 @@ describe('index', () => {
 		await sleep(pollTime * 3);
 
 		expect(handleError).toHaveBeenCalledTimes(0);
+	});
+
+	test('sendText', async () => {
+		await expect(
+			sdk.sendText('1@chat', new MessageBuilder()
+				.text('valid'))
+		).resolves.toEqual('1');
+	});
+
+	test('sendText error', async () => {
+		await expect(
+			sdk.sendText('1', 'invalid')
+		).rejects.toEqual(
+			new MyTeamSDKError('Invalid text', {
+				raw: {ok: false, description: 'Invalid text'},
+				url: `http://localhost:6666/messages/sendText?chatId=1&text=invalid&token=${token}`,
+			}),
+		);
+	});
+
+	test('sendText malformed response', async () => {
+		await expect(
+			sdk.sendText('1', 'malformed')
+		).rejects.toEqual(
+			new MyTeamSDKError('Bad sendText response', {raw: {ok: true}}),
+		);
 	});
 });
