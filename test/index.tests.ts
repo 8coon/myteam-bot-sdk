@@ -1,10 +1,11 @@
 import {MyTeamServerMock} from "./MyTeamServerMock";
-import {MyTeamSDK, MyTeamSDKError} from "../src";
+import {MyTeamSDK, MyTeamSDKError, URLBuilder} from "../src";
 import {MyTeamNewMessageEvent} from "../src/types";
 import {getNewMessageEvent} from "./fixtures";
 import {sleep} from "./sleep";
 
 const port = 6666;
+const baseURL = `http://localhost:${port}`;
 const token = '123';
 const pollTime = 50;
 
@@ -12,7 +13,7 @@ describe('index', () => {
 	let server: MyTeamServerMock;
 	const sdk = new MyTeamSDK({
 		token,
-		baseURL: `http://localhost:${port}`,
+		baseURL,
 		pollTime,
 	});
 
@@ -27,18 +28,27 @@ describe('index', () => {
 	});
 
 	test('SDK sends token to each GET request', async () => {
-		await expect(sdk.get('events/get')).resolves.toBeTruthy();
+		await expect(sdk.get(new URLBuilder('events/get', baseURL))).resolves.toBeTruthy();
 		expect(server.lastToken).toEqual(token);
 	});
 
 	test('SDK sends token to each POST request', async () => {
-		await expect(sdk.post('test', 'some body')).rejects.toEqual(
+		await expect(sdk.post(new URLBuilder('test', baseURL), 'some body')).rejects.toEqual(
 			new MyTeamSDKError(undefined, {
 				raw: {ok: false},
 				url: `http://localhost:6666/test?token=${token}`,
 			}),
 		);
 		expect(server.lastToken).toEqual(token);
+	});
+
+	test('SDK accepts string as POST url', async () => {
+		await expect(sdk.post('test', 'some body')).rejects.toEqual(
+			new MyTeamSDKError(undefined, {
+				raw: {ok: false},
+				url: `http://localhost:6666/test?token=${token}`,
+			}),
+		);
 	});
 
 	test('get events', async () => {
