@@ -5,7 +5,10 @@
     "esModuleInterop": true,
     "target": "es6",
     "sourceMap": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "lib": [
+      "es2020"
+    ]
   },
   "include": [
     "src/**/*.ts"
