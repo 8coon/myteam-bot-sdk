@@ -158,5 +158,11 @@ sdk.on('callbackQuery', (event) => {
 	event.answer();
 });
 
+// Выводим ошибки в консоль
+sdk.on('error', (error) => {
+	console.error(error);
+});
+
+
 // Запускаем поллинг событий
 sdk.listen();
