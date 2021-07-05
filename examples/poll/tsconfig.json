@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2015",
+    "moduleResolution": "Node",
+    "lib": [
+      "es2020"
+    ]
+  }
+}
