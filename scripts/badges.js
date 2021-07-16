@@ -40,8 +40,14 @@ async function main() {
 
 	// Бейдж покрытия
 	await fetchFile(
-		badgeURL({label: 'node', message: pkg.engines.node, color: 'brightgreen'}),
+		badgeURL({label: 'node', message: pkg.engines.node, color: 'blue'}),
 		path.resolve(badgesPath, 'node.svg'),
+	);
+
+	// Бейдж npm
+	await fetchFile(
+		badgeURL({label: 'npm', message: pkg.version, color: 'red'}),
+		path.resolve(badgesPath, 'npm.svg'),
 	);
 }
 
