@@ -64,7 +64,7 @@ npm test
 [docsify-cli](https://www.npmjs.com/package/docsify-cli):
 
 ```shell
-npm i -G docsify-cli
+npm i -g docsify-cli
 ```
 
 После этого можно запустить сервер с документацией с помощью команды:
