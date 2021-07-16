@@ -16,8 +16,9 @@
     "build:types": "tsc -d --emitDeclarationOnly --outDir ./dist",
     "build": "npm run build:clear && npm run build:rollup && npm run build:types",
     "prepublishOnly": "npm run build",
-    "test": "jest --coverage --runInBand",
-    "docs": "docsify serve docs"
+    "test": "jest --coverage --runInBand && jest-coverage-badges",
+    "docs": "docsify serve docs",
+    "badges": "node scripts/badges.js"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",

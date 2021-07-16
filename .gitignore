@@ -144,8 +144,4 @@ Session.vim
 .size-snapshot.json
 rollup.visualizer.html
 
-# @mail-core/deploy
-.build
-.locale
-.hotbox
-.tarball
+docs/badges
