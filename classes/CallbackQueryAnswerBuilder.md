@@ -6,7 +6,7 @@
 import {MyTeamSDK} from 'myteam-bot-sdk';
 
 const sdk = new MyTeamSDK({
-	token: '' || process.env.EXAMPLE_TOKEN,
+	token: process.env.EXAMPLE_TOKEN,
 });
 
 sdk.on('callbackQuery', (event) => {
