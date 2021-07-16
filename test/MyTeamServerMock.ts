@@ -1,6 +1,7 @@
-import * as http from "http";
-import {MyTeamAnyEvent} from "../src/types";
-import {sleep} from "./sleep";
+import * as http from 'http';
+import { URL } from 'url';
+import {MyTeamAnyEvent} from '../src';
+import {sleep} from './sleep';
 
 export class MyTeamServerMock {
 	private readonly _server: http.Server;
