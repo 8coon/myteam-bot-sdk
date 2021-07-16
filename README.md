@@ -61,7 +61,7 @@ npm test
 ### Изменение документации
 
 Для запуска документации локально нужно установить
-[docsify-cli](https://www.npmjs.com/package/docsify-cli:
+[docsify-cli](https://www.npmjs.com/package/docsify-cli):
 
 ```shell
 npm i -G docsify-cli
