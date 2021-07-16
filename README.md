@@ -57,3 +57,20 @@ npm test
 - [ts-jest](https://github.com/kulshekhar/ts-jest)
 
 Информация о покрытии будет находиться в папке coverage.
+
+### Изменение документации
+
+Для запуска документации локально нужно установить
+[docsify-cli](https://www.npmjs.com/package/docsify-cli:
+
+```shell
+npm i -G docsify-cli
+```
+
+После этого можно запустить сервер с документацией с помощью команды:
+
+```shell
+npm run docs
+```
+
+Сервер будет доступен по адресу [http://localhost:3000](http://localhost:3000).
