@@ -3,4 +3,10 @@ module.exports = {
 	testMatch: ["**/?(*.)+(spec|tests).[jt]s?(x)"],
 	testEnvironment: "node",
 	verbose: false,
+	"coverageReporters": [
+		"json-summary",
+		"text",
+		"html",
+		"lcov"
+	]
 }
