@@ -25,3 +25,8 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
+      
+      - name: Report coverage
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: ./coverage/lcov.info
