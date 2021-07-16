@@ -13,7 +13,8 @@
     "build:types": "tsc -d --emitDeclarationOnly --outDir ./dist",
     "build": "npm run build:clear && npm run build:rollup && npm run build:types",
     "prepublishOnly": "npm run build",
-    "test": "jest --coverage --runInBand"
+    "test": "jest --coverage --runInBand",
+    "docs": "docsify serve docs"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
