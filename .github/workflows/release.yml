@@ -4,7 +4,7 @@ on:
   page_build:
   release:
     types:
-      - created
+      - published
 
 jobs:
   publish_release:
@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 16.x
           cache: 'npm'
+          registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm publish
         env:
@@ -36,6 +37,7 @@ jobs:
         with:
           node-version: 16.x
           cache: 'npm'
+          registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm publish --tag=rc
         env:
