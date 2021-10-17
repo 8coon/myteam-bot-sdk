@@ -1,4 +1,4 @@
-name: release
+name: Publish release
 
 on:
   page_build:
@@ -20,8 +20,9 @@ jobs:
           node-version: 16.x
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
       - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
 
   publish_prerelease:
     name: Publish pre-release
@@ -36,5 +37,6 @@ jobs:
           node-version: 16.x
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
       - run: npm publish --tag=rc
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}

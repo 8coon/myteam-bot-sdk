@@ -1,4 +1,4 @@
-name: release
+name: Publish development release
 
 on:
   workflow_dispatch:
@@ -16,5 +16,6 @@ jobs:
           node-version: 16.x
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
       - run: npm publish --tag=dev
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
