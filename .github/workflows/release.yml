@@ -21,6 +21,8 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
 
   publish_prerelease:
     name: Publish pre-release
@@ -36,3 +38,5 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm publish --tag=rc
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
