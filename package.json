@@ -1,6 +1,6 @@
 {
   "name": "myteam-bot-sdk",
-  "version": "1.0.0-dev.0",
+  "version": "1.0.0-rc.0",
   "repository": "https://github.com/8coon/myteam-bot-sdk",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
