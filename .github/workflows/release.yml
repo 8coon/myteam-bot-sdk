@@ -1,0 +1,40 @@
+name: release
+
+on:
+  page_build:
+  release:
+    types:
+      - created
+
+jobs:
+  publish_release:
+    name: Publish release
+    if: "!github.event.release.prerelease"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish
+
+  publish_prerelease:
+    name: Publish pre-release
+    if: "github.event.release.prerelease"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --tag=rc
